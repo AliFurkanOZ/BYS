@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BYS.Data;
+using BYS.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,24 +25,47 @@ namespace BYS.Controllers
 
         // GET: api/CourseSelectionHistories
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CourseSelectionHistory>>> GetCourseSelectionHistory()
+        public async Task<ActionResult<IEnumerable<object>>> GetCourseSelectionHistory()
         {
-            return await _context.CourseSelectionHistory.ToListAsync();
+            var courseSelectionHistory = await _context.CourseSelectionHistory
+                .Include(csh => csh.Student) // Student ilişkisini dahil ediyoruz
+                .Select(csh => new
+                {
+                    csh.StudentID,
+                    csh.SelectionDate,
+                    StudentName = csh.Student.FirstName, // Öğrencinin adı
+                    StudentLastName = csh.Student.LastName // Öğrencinin soyadı
+                })
+                .ToListAsync();
+
+            return Ok(courseSelectionHistory);
         }
+
 
         // GET: api/CourseSelectionHistories/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<CourseSelectionHistory>> GetCourseSelectionHistory(int id)
+        public async Task<IActionResult> GetCourseSelectionHistory(int id)
         {
-            var courseSelectionHistory = await _context.CourseSelectionHistory.FindAsync(id);
+            var courseSelectionHistory = await _context.CourseSelectionHistory
+                .Include(csh => csh.Student) // Student ilişkisini dahil ediyoruz
+                .Where(csh => csh.StudentID == id)
+                .Select(csh => new
+                {
+                    csh.StudentID,
+                    csh.SelectionDate,
+                    StudentName = csh.Student.FirstName, // Öğrencinin adı
+                    StudentLastName = csh.Student.LastName // Öğrencinin soyadı
+                })
+                .FirstOrDefaultAsync();
 
             if (courseSelectionHistory == null)
             {
                 return NotFound();
             }
 
-            return courseSelectionHistory;
+            return Ok(courseSelectionHistory);
         }
+
 
         // PUT: api/CourseSelectionHistories/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
