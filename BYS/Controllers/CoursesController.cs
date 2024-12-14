@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BYS.Data;
+using BYS.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,24 +25,61 @@ namespace BYS.Controllers
 
         // GET: api/Courses
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Course>>> GetCourses()
+        public async Task<ActionResult<IEnumerable<object>>> GetCourse()
         {
-            return await _context.Courses.ToListAsync();
+            var courses = await _context.Courses
+                .Include(c => c.StudentCourseSelections)  // StudentCourseSelections ilişkisini dahil ediyoruz
+                .Select(c => new
+                {
+                    c.CourseID,
+                    c.CourseCode,
+                    c.CourseName,
+                    c.IsMandatory,
+                    c.Credit,
+                    c.Department,
+                    StudentCourseSelections = c.StudentCourseSelections.Select(sc => new
+                    {
+                        sc.StudentID,
+                        sc.SelectionDate
+                    }).ToList()  // Sadece StudentID ve SelectionDate bilgilerini alıyoruz
+                })
+                .ToListAsync();
+
+            return Ok(courses);
         }
+
 
         // GET: api/Courses/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Course>> GetCourse(int id)
+        public async Task<IActionResult> GetCourse(int id)
         {
-            var course = await _context.Courses.FindAsync(id);
+            var course = await _context.Courses
+                .Include(c => c.StudentCourseSelections)  // StudentCourseSelections ilişkisini dahil ediyoruz
+                .Where(c => c.CourseID == id)
+                .Select(c => new
+                {
+                    c.CourseID,
+                    c.CourseCode,
+                    c.CourseName,
+                    c.IsMandatory,
+                    c.Credit,
+                    c.Department,
+                    StudentCourseSelections = c.StudentCourseSelections.Select(sc => new
+                    {
+                        sc.StudentID,
+                        sc.SelectionDate
+                    }).ToList()  // Sadece StudentID ve SelectionDate bilgilerini alıyoruz
+                })
+                .FirstOrDefaultAsync();
 
             if (course == null)
             {
                 return NotFound();
             }
 
-            return course;
+            return Ok(course);
         }
+
 
         // PUT: api/Courses/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
