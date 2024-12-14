@@ -23,24 +23,59 @@ namespace BYS.Controllers
 
         // GET: api/Advisors
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Advisors>>> GetAdvisors()
+        public async Task<IActionResult> GetAdvisor()
         {
-            return await _context.Advisors.ToListAsync();
+            var advisors = await _context.Advisors
+                .Select(a => new
+                {
+                    a.AdvisorID,
+                    a.FullName,
+                    a.Title,
+                    a.Department,
+                    a.Email,
+                    Students = a.Students.Select(s => new
+                    {
+                        s.StudentID,
+                        s.FirstName,
+                        s.LastName
+                    }).ToList() // Öğrencileri seçiyoruz
+                })
+                .ToListAsync();
+
+            return Ok(advisors);
         }
+
 
         // GET: api/Advisors/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Advisors>> GetAdvisors(int id)
+        public async Task<IActionResult> GetAdvisors(int id)
         {
-            var advisors = await _context.Advisors.FindAsync(id);
+            var advisor = await _context.Advisors
+                .Where(a => a.AdvisorID == id)
+                .Select(a => new
+                {
+                    a.AdvisorID,
+                    a.FullName,
+                    a.Title,
+                    a.Department,
+                    a.Email,
+                    Students = a.Students.Select(s => new
+                    {
+                        s.StudentID,
+                        s.FirstName,
+                        s.LastName
+                    }).ToList()
+                })
+                .FirstOrDefaultAsync();
 
-            if (advisors == null)
+            if (advisor == null)
             {
-                return NotFound();
+                return NotFound(); // Eğer danışman bulunamazsa 404 döner
             }
 
-            return advisors;
+            return Ok(advisor);
         }
+
 
         // PUT: api/Advisors/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
