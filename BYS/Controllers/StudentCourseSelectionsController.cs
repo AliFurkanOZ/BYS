@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BYS.Data;
+using BYS.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -25,21 +27,59 @@ namespace BYS.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<StudentCourseSelections>>> GetStudentCourseSelections()
         {
-            return await _context.StudentCourseSelections.ToListAsync();
+            var studentsWithCourses = await _context.Students
+                .Include(s => s.StudentCourseSelections)
+                    .ThenInclude(sc => sc.Course) // StudentCourseSelections üzerinden Course ilişkisini yükle
+                .Select(s => new
+                {
+                    s.StudentID,
+                    s.FirstName,
+                    s.LastName,
+                    Courses = s.StudentCourseSelections.Select(sc => new
+                    {
+                        sc.CourseID,
+                        sc.SelectionDate,
+                        CourseName = sc.Course.CourseName
+                    }).ToList()
+                })
+                .ToListAsync();
+
+
+            if (studentsWithCourses == null || !studentsWithCourses.Any())
+                return NotFound(new { Message = "No students or course selections found." });
+
+            return Ok(studentsWithCourses);
         }
 
         // GET: api/StudentCourseSelections/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<StudentCourseSelections>> GetStudentCourseSelections(int id)
+        [HttpGet("{studentId}")]
+        public IActionResult GetStudentCourseSelections(int studentId)
         {
-            var studentCourseSelections = await _context.StudentCourseSelections.FindAsync(id);
+            // Veritabanından seçimleri alıyoruz
+            var selections = _context.StudentCourseSelections
+               .Where(s => s.StudentID == studentId)
+               .Select(s => new
+               {
+                   s.Student.StudentID,
+                   Course = new
+                   {
+                       s.Course.CourseCode,
+                       s.Course.CourseName,
+                       s.Course.Department,
+                       s.Course.Credit
+                   }
+               })
+               .ToList();
 
-            if (studentCourseSelections == null)
+
+            // Eğer veri yoksa NotFound döndür
+            if (selections == null || !selections.Any())
             {
-                return NotFound();
+                return NotFound("Bu öğrenci için ders seçimi bulunamadı.");
             }
 
-            return studentCourseSelections;
+            // Veri bulundu, JSON formatında geri dön
+            return Ok(selections);
         }
 
         // PUT: api/StudentCourseSelections/5
