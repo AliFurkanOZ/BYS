@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BYS.Data;
+using BYS.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,24 +25,46 @@ namespace BYS.Controllers
 
         // GET: api/CourseQuotas
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CourseQuota>>> GetCourseQuotas()
+        public async Task<ActionResult<IEnumerable<object>>> GetCourseQuotas()
         {
-            return await _context.CourseQuotas.ToListAsync();
+            var courseQuotas = await _context.CourseQuotas
+                .Include(cq => cq.Course) // Course ilişkisini dahil ediyoruz
+                .Select(cq => new
+                {
+                    cq.CourseId,
+                    cq.Quota,
+                    cq.RemainingQuota,
+                    CourseName = cq.Course.CourseName // Sadece CourseName alanını dahil ediyoruz
+                })
+                .ToListAsync();
+
+            return Ok(courseQuotas);
         }
+
 
         // GET: api/CourseQuotas/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<CourseQuota>> GetCourseQuota(int id)
+        public async Task<IActionResult> GetCourseQuota(int id)
         {
-            var courseQuota = await _context.CourseQuotas.FindAsync(id);
+            var courseQuota = await _context.CourseQuotas
+                .Where(cq => cq.CourseId == id)
+                .Select(cq => new
+                {
+                    cq.CourseId,
+                    cq.Quota,
+                    cq.RemainingQuota,
+                    CourseName = cq.Course.CourseName // Sadece CourseName alanı
+                })
+                .FirstOrDefaultAsync();
 
             if (courseQuota == null)
             {
-                return NotFound();
+                return NotFound(); // Eğer courseQuota bulunamazsa 404 döner
             }
 
-            return courseQuota;
+            return Ok(courseQuota);
         }
+
 
         // PUT: api/CourseQuotas/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -113,6 +137,30 @@ namespace BYS.Controllers
 
             return NoContent();
         }
+
+
+
+        [HttpPatch("coursequotas/{courseId}")]
+        public async Task<IActionResult> UpdateCourseQuota(int courseId)
+        {
+            var courseQuota = await _context.CourseQuotas.FindAsync(courseId);
+
+            if (courseQuota == null)
+            {
+                return NotFound("Ders bulunamadı.");
+            }
+
+            // Kontenjanı bir azalt
+            if (courseQuota.RemainingQuota > 0)
+            {
+                courseQuota.RemainingQuota--;
+                await _context.SaveChangesAsync(); // Veritabanına kaydediyoruz
+                return Ok(courseQuota); // Güncellenmiş bilgiyi geri gönderiyoruz
+            }
+
+            return BadRequest("Kontenjan dolmuş.");
+        }
+
 
         private bool CourseQuotaExists(int id)
         {
