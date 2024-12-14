@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BYS.Data;
+using BYS.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,24 +25,68 @@ namespace BYS.Controllers
 
         // GET: api/Students
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Student>>> GetStudents()
+        public async Task<ActionResult<IEnumerable<Student>>> GetStudent()
         {
-            return await _context.Students.ToListAsync();
+            var studentsWithAdvisorAndCourses = await _context.Students
+                .Select(s => new
+                {
+                    s.StudentID,
+                    s.FirstName,
+                    s.LastName,
+                    s.Email,
+                    Advisor = new
+                    {
+                        s.Advisors.FullName, // Danışmanın adı
+                        s.Advisors.Title, // Danışmanın unvanı
+                        s.Advisors.Department // Danışmanın bölümü
+                    },
+                    Courses = s.StudentCourseSelections.Select(sc => new
+                    {
+                        sc.CourseID,
+                        sc.Course.CourseName, // Kurs adı
+                        sc.SelectionDate
+                    }).ToList()
+                })
+                .ToListAsync();
+
+            return Ok(studentsWithAdvisorAndCourses);
         }
 
         // GET: api/Students/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Student>> GetStudent(int id)
         {
-            var student = await _context.Students.FindAsync(id);
+            var studentWithAdvisorAndCourses = await _context.Students
+                .Where(s => s.StudentID == id)
+                .Select(s => new
+                {
+                    s.StudentID,
+                    s.FirstName,
+                    s.LastName,
+                    s.Email,
+                    Advisor = new
+                    {
+                        s.Advisors.FullName, // Danışmanın adı
+                        s.Advisors.Title, // Danışmanın unvanı
+                        s.Advisors.Department // Danışmanın bölümü
+                    },
+                    Courses = s.StudentCourseSelections.Select(sc => new
+                    {
+                        sc.CourseID,
+                        sc.Course.CourseName, // Kurs adı
+                        sc.SelectionDate
+                    }).ToList()
+                })
+                .FirstOrDefaultAsync();
 
-            if (student == null)
+            if (studentWithAdvisorAndCourses == null)
             {
-                return NotFound();
+                return NotFound(); // Öğrenci bulunamazsa 404 döndür
             }
 
-            return student;
+            return Ok(studentWithAdvisorAndCourses); // Öğrenci ve ilişkili veriler başarılı şekilde döndürülür
         }
+
 
         // PUT: api/Students/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -88,13 +134,21 @@ namespace BYS.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteStudent(int id)
         {
-            var student = await _context.Students.FindAsync(id);
+            var student = await _context.Students
+                .Include(s => s.StudentCourseSelections) // İlişkili kayıtları getir
+                .FirstOrDefaultAsync(s => s.StudentID == id);
+
             if (student == null)
             {
                 return NotFound();
             }
 
+            // Önce ilişkili kayıtları sil
+            _context.StudentCourseSelections.RemoveRange(student.StudentCourseSelections);
+
+            // Ardından öğrenciyi sil
             _context.Students.Remove(student);
+
             await _context.SaveChangesAsync();
 
             return NoContent();
