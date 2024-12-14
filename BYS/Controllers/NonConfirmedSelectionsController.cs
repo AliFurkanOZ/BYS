@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using BYS.Data;
+using BYS.Models;
 using BYS.Data;
 using BYS.Models;
 
@@ -25,8 +29,24 @@ namespace BYS.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<NonConfirmedSelections>>> GetNonConfirmedSelections()
         {
-            return await _context.NonConfirmedSelections.ToListAsync();
+            var nonConfirmedSelections = await _context.NonConfirmedSelections
+                .Include(ns => ns.Student)
+                .Include(ns => ns.Course)
+                .Select(ns => new
+                {
+                    ns.Id,
+                    ns.Student.StudentID,    // StudentId'yi ekledik
+                    ns.Student.FirstName,
+                    ns.Student.LastName,
+                    ns.Course.CourseName,
+                    ns.Course.CourseID       // CourseId'yi de ekledik
+                })
+                .ToListAsync();
+
+            return Ok(nonConfirmedSelections);
         }
+
+
 
         // GET: api/NonConfirmedSelections/5
         [HttpGet("{id}")]
