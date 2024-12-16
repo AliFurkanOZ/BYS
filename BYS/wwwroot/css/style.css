@@ -1,0 +1,94 @@
+﻿/* Genel Stil Ayarları */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #004066;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: white;
+}
+
+.login-container {
+    background-color: #004066;
+    padding: 30px;
+    text-align: center;
+    width: 350px;
+}
+
+.logo h1 {
+    font-size: 36px;
+    margin-bottom: 5px;
+}
+
+.logo p {
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.tabs {
+    display: flex;
+    margin-bottom: 15px;
+}
+
+    .tabs button {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+        .tabs button.active {
+            background-color: #0078d4;
+            color: white;
+        }
+
+        .tabs button:not(.active) {
+            background-color: white;
+            color: #004066;
+        }
+
+.input-container input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+}
+
+input:focus {
+    outline: 2px solid #0078d4;
+}
+
+a {
+    color: white;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #0078d4;
+    color: white;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+    .submit-btn:hover {
+        background-color: #005a9e;
+    }

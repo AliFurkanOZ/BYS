@@ -1,0 +1,40 @@
+﻿@{
+    Layout = null;
+    <!-- Layout olmadan tek sayfa -->
+}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KTÜ Giriş Sayfası</title>
+    <link rel="stylesheet" href="~/css/style.css"> <!-- Harici CSS bağlantısı -->
+</head>
+<body>
+    <div class="login-container">
+        <!-- Logo Bölgesi -->
+        <div class="logo">
+            <h1>KTÜ</h1>
+            <p>Karadeniz Teknik Üniversitesi</p>
+        </div>
+
+        <!-- Sekmeler -->
+        <div class="tabs">
+            <button id="personelTab" class="active" onclick="toggleTab('personel')">Personel</button>
+            <button id="ogrenciTab" onclick="toggleTab('ogrenci')">Öğrenci</button>
+        </div>
+
+        <!-- Giriş Formu -->
+        <form id="loginForm">
+            <div class="input-container">
+                <input type="text" id="username" placeholder="Kullanıcı Adı" required>
+                <input type="password" id="password" placeholder="Şifre" required>
+            </div>
+            <a href="#">Şifreni mi unuttun?</a>
+            <button type="button" class="submit-btn" onclick="submitForm()">Giriş Yap</button>
+        </form>
+    </div>
+
+    <script src="~/js/script.js"></script> <!-- Harici JS bağlantısı -->
+</body>
+</html>
