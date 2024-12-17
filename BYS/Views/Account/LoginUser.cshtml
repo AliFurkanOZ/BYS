@@ -1,0 +1,87 @@
+﻿@model BYS.Models.LoginViewModel
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Aktif seçeneği için stil */
+        .role-label.active {
+            border-color: #3b82f6; /* Seçilen rolün kenarını mavi yap */
+            transform: scale(1.1); /* Seçilen öğeyi büyüt */
+            transition: transform 0.3s, border-color 0.3s; /* Yumuşak geçiş */
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 min-h-screen flex justify-center items-center relative overflow-hidden">
+
+    <!-- Main Container -->
+    <div class="backdrop-blur-lg bg-white/30 shadow-2xl rounded-3xl p-8 max-w-md w-full transform transition hover:scale-105 duration-300">
+
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-indigo-600 to-indigo-400 text-white py-6 rounded-t-3xl shadow-lg text-center">
+            <h2 class="text-3xl font-extrabold tracking-wide uppercase drop-shadow-lg">Giriş Yap</h2>
+        </div>
+
+        <!-- Role Selection -->
+        <form asp-action="LoginUser" asp-controller="Account" method="post">
+            <div class="role-selection flex justify-center gap-8 mb-8">
+                <!-- Öğrenci Seçimi -->
+                <label class="cursor-pointer text-center role-label" id="studentRole">
+                    <input name="Role" type="radio" value="Student" checked class="hidden" />
+                    <img src="https://png.pngtree.com/png-clipart/20240310/original/pngtree-d-render-of-a-cute-school-boy-walking-isolated-on-white-png-image_14551138.png" alt="Student" class="w-24 h-24 rounded-full border-2 border-transparent hover:border-blue-500 transition-all duration-300" />
+                    <div class="mt-2 font-semibold text-lg">Öğrenci</div>
+                </label>
+
+                <!-- Akademisyen Seçimi -->
+                <label class="cursor-pointer text-center role-label" id="advisorRole">
+                    <input name="Role" type="radio" value="Advisor" class="hidden" />
+                    <img src="https://png.pngtree.com/png-clipart/20240315/original/pngtree-teachers-presentation-illustration-for-education-png-image_14593987.png" alt="Advisor" class="w-24 h-24 rounded-full border-2 border-transparent hover:border-blue-500 transition-all duration-300" />
+                    <div class="mt-2 font-semibold text-lg">Akademisyen</div>
+                </label>
+            </div>
+
+            <!-- Form Fields -->
+            <div class="mb-6">
+                <label for="Username" class="block text-gray-800 font-medium">Kullanıcı Adı</label>
+                <input name="Username" id="Username" class="form-control mt-2 p-3 w-full rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Kullanıcı adınızı girin" />
+                <span asp-validation-for="Username" class="text-danger text-sm"></span>
+            </div>
+
+            <div class="mb-6">
+                <label for="Password" class="block text-gray-800 font-medium">Şifre</label>
+                <input name="Password" type="password" id="Password" class="form-control mt-2 p-3 w-full rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Şifrenizi girin" />
+                <span asp-validation-for="Password" class="text-danger text-sm"></span>
+            </div>
+
+            <button type="submit" class="w-full py-3 bg-blue-600 text-white rounded-xl shadow-md hover:bg-blue-500 transform hover:scale-105 transition-all duration-300 font-semibold">
+                Giriş Yap
+            </button>
+        </form>
+
+        @if (ViewBag.Message != null)
+        {
+            <p class="text-red-500 text-center mt-4">@ViewBag.Message</p>
+        }
+    </div>
+
+    <!-- Tailwind CSS JS (Optional) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        // Rol seçimlerinde aktif etme işlemi
+        document.getElementById('studentRole').addEventListener('click', function () {
+            document.getElementById('advisorRole').classList.remove('active');
+            this.classList.add('active');
+        });
+
+        document.getElementById('advisorRole').addEventListener('click', function () {
+            document.getElementById('studentRole').classList.remove('active');
+            this.classList.add('active');
+        });
+    </script>
+</body>
+</html>
