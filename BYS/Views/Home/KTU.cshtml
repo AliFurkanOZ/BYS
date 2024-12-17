@@ -25,13 +25,13 @@
         </div>
 
         <!-- Giriş Formu -->
-        <form id="loginForm">
+        <form id="loginForm" method="" asp-action="LoginUser" asp-controller="Home">
             <div class="input-container">
                 <input type="text" id="username" placeholder="Kullanıcı Adı" required>
                 <input type="password" id="password" placeholder="Şifre" required>
             </div>
             <a href="#">Şifreni mi unuttun?</a>
-            <button type="button" class="submit-btn" onclick="submitForm()">Giriş Yap</button>
+            <button type="submit" class="submit-btn" >Giriş Yap</button>
         </form>
     </div>
 
