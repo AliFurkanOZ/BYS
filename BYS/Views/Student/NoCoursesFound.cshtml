@@ -1,0 +1,49 @@
+﻿@{
+    ViewData["Title"] = "Ders Bulunamadı";
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-b from-gray-100 via-gray-200 to-gray-300 min-h-screen flex justify-center items-center relative overflow-hidden">
+    <!-- Decorative Elements -->
+    <div class="absolute w-72 h-72 bg-white opacity-10 rounded-full -top-10 -left-10"></div>
+    <div class="absolute w-96 h-96 bg-white opacity-10 rounded-full bottom-0 -right-16"></div>
+
+    <!-- Main Container -->
+    <div class="backdrop-blur-lg bg-white/30 shadow-2xl rounded-3xl p-8 max-w-4xl w-full transform transition hover:scale-105 duration-300">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-blue-600 to-blue-400 text-white py-6 rounded-t-3xl shadow-lg text-center">
+            <h1 class="text-3xl font-extrabold tracking-widest uppercase drop-shadow-lg">Ders Bulunamadı</h1>
+        </div>
+
+        <!-- Message -->
+        <div class="p-6 text-gray-900 text-center space-y-6">
+            <div class="p-4 rounded-xl bg-gray-100 shadow-md hover:shadow-lg transition">
+                <p class="text-lg font-medium text-gray-600">
+                    Kayıtlı olduğunuz dersler bulunamadı. Lütfen tekrar deneyin veya bir hata oluştuysa destekle iletişime geçin.
+                </p>
+            </div>
+        </div>
+
+        <!-- Button -->
+        <div class="flex justify-center mt-6">
+            <a href="@Url.Action("Index", "Home")"
+               class="bg-blue-600 text-white py-3 px-6 rounded-2xl shadow-lg hover:bg-blue-500 transform hover:scale-105 transition-all duration-300 text-center font-semibold flex items-center justify-center space-x-2">
+                <span>🔙</span>
+                <span>Ana Sayfaya Dön</span>
+            </a>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center py-4 mt-6 text-gray-600 text-sm">
+            <p>&copy; 2024 Öğrenci Yönetim Sistemi | Tüm Hakları Saklıdır</p>
+        </div>
+    </div>
+</body>
+</html>
