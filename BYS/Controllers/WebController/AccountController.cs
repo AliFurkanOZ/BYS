@@ -3,14 +3,14 @@ using BYS.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace BYS.Controllers
+namespace BYS.Controllers.WebController
 {
-    public class HomeController : Controller
+    public class AccountController : Controller
     {
 
         private readonly RepositoryDbContext _context;
 
-        public HomeController(RepositoryDbContext context)
+        public AccountController(RepositoryDbContext context)
         {
             _context = context;
         }
