@@ -16,13 +16,13 @@
         }
     </style>
 </head>
-<body class="bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 min-h-screen flex justify-center items-center relative overflow-hidden">
+<body class="bg-gradient-to-br from-green-400 via-teal-500 to-blue-500 min-h-screen flex justify-center items-center relative overflow-hidden">
 
     <!-- Main Container -->
     <div class="backdrop-blur-lg bg-white/30 shadow-2xl rounded-3xl p-8 max-w-md w-full transform transition hover:scale-105 duration-300">
 
         <!-- Header -->
-        <div class="bg-gradient-to-r from-indigo-600 to-indigo-400 text-white py-6 rounded-t-3xl shadow-lg text-center">
+        <div class="bg-gradient-to-r from-teal-600 to-teal-400 text-white py-6 rounded-t-3xl shadow-lg text-center">
             <h2 class="text-3xl font-extrabold tracking-wide uppercase drop-shadow-lg">Giriş Yap</h2>
         </div>
 
@@ -47,17 +47,17 @@
             <!-- Form Fields -->
             <div class="mb-6">
                 <label for="Username" class="block text-gray-800 font-medium">Kullanıcı Adı</label>
-                <input name="Username" id="Username" class="form-control mt-2 p-3 w-full rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Kullanıcı adınızı girin" />
+                <input name="Username" id="Username" class="form-control mt-2 p-3 w-full rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Kullanıcı adınızı girin" />
                 <span asp-validation-for="Username" class="text-danger text-sm"></span>
             </div>
 
             <div class="mb-6">
                 <label for="Password" class="block text-gray-800 font-medium">Şifre</label>
-                <input name="Password" type="password" id="Password" class="form-control mt-2 p-3 w-full rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Şifrenizi girin" />
+                <input name="Password" type="password" id="Password" class="form-control mt-2 p-3 w-full rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Şifrenizi girin" />
                 <span asp-validation-for="Password" class="text-danger text-sm"></span>
             </div>
 
-            <button type="submit" class="w-full py-3 bg-blue-600 text-white rounded-xl shadow-md hover:bg-blue-500 transform hover:scale-105 transition-all duration-300 font-semibold">
+            <button type="submit" class="w-full py-3 bg-gradient-to-r from-teal-600 to-green-600 text-white rounded-xl shadow-md hover:from-teal-700 hover:to-green-700 transform hover:scale-105 transition-all duration-300 font-semibold">
                 Giriş Yap
             </button>
         </form>
@@ -67,9 +67,6 @@
             <p class="text-red-500 text-center mt-4">@ViewBag.Message</p>
         }
     </div>
-
-    <!-- Tailwind CSS JS (Optional) -->
-    <script src="https://cdn.tailwindcss.com"></script>
 
     <script>
         // Rol seçimlerinde aktif etme işlemi
