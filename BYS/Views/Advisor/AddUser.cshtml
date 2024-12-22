@@ -1,0 +1,116 @@
+﻿@model List<BYS.Models.Users>
+@{
+    var message = ViewBag.Message as string;
+    var messageType = ViewBag.MessageType as string;
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kullanıcı Ekleme Paneli</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-r from-indigo-50 via-blue-50 to-teal-50 min-h-screen flex justify-center items-center relative overflow-hidden">
+    <!-- Decorative Background Elements -->
+    <div class="absolute w-72 h-72 bg-white opacity-10 rounded-full -top-10 -left-10"></div>
+    <div class="absolute w-96 h-96 bg-white opacity-10 rounded-full bottom-0 -right-16"></div>
+
+    <!-- Main Container -->
+    <div class="backdrop-blur-lg bg-white/30 shadow-2xl rounded-3xl p-8 max-w-6xl w-full transform transition hover:scale-105 duration-300 overflow-y-auto max-h-screen">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-blue-600 to-teal-500 text-white py-6 rounded-t-3xl shadow-lg text-center">
+            <h1 class="text-4xl font-extrabold tracking-widest uppercase drop-shadow-lg">Kullanıcı Ekleme Paneli</h1>
+        </div>
+
+        <!-- Notification Messages -->
+        @if (!string.IsNullOrEmpty(message))
+        {
+            <div class="mt-6 p-4 rounded-lg text-white text-center shadow-lg transition-transform duration-300 ease-in-out @((messageType == "success") ? "bg-green-500" : "bg-red-500")">
+                @message
+            </div>
+        }
+
+        <!-- User List -->
+        <div class="mt-6 overflow-x-auto">
+            <table class="w-full bg-white shadow-lg rounded-lg border border-gray-200">
+                <thead class="bg-gradient-to-r from-blue-600 to-teal-600 text-white">
+                    <tr>
+                        <th class="py-4 px-6 text-left">Kullanıcı ID</th>
+                        <th class="py-4 px-6 text-left">Kullanıcı Adı</th>
+                        <th class="py-4 px-6 text-left">Şifre</th>
+                        <th class="py-4 px-6 text-left">Rol</th>
+                        <th class="py-4 px-6 text-left">E-posta</th>
+                        <th class="py-4 px-6 text-center">İşlem</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-800 divide-y divide-gray-200">
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var user in Model)
+                        {
+                            <tr class="hover:bg-blue-50 transition duration-300 ease-in-out">
+                                <td class="py-4 px-6">@user.UserID</td>
+                                <td class="py-4 px-6">@user.Username</td>
+                                <td class="py-4 px-6">@user.PasswordHash</td>
+                                <td class="py-4 px-6">@user.Role</td>
+                                <td class="py-4 px-6">@user.Email</td>
+                                <td class="py-4 px-6 text-center">
+                                    <form action="@Url.Action("DeleteUser", "Advisor")" method="post" class="inline">
+                                        <input type="hidden" name="userId" value="@user.UserID" />
+                                        <button type="submit" class="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 shadow-md transition-transform duration-300 ease-in-out">
+                                            Sil
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="py-4 px-6 text-center text-gray-500">Kullanıcı bulunamadı.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Add User Form -->
+        <div class="mt-10 bg-white shadow-xl rounded-lg p-8">
+            <h2 class="text-3xl font-semibold text-blue-800 mb-6">Yeni Kullanıcı Ekle</h2>
+            <form action="@Url.Action("AddUser", "Advisor")" method="post">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <label for="Username" class="text-lg font-medium">Kullanıcı Adı</label>
+                        <input type="text" name="Username" id="Username" class="border border-gray-300 p-3 rounded-md w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+                    </div>
+                    <div>
+                        <label for="PasswordHash" class="text-lg font-medium">Şifre</label>
+                        <input type="password" name="PasswordHash" id="PasswordHash" class="border border-gray-300 p-3 rounded-md w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+                    </div>
+                    <div>
+                        <label for="Role" class="text-lg font-medium">Rol</label>
+                        <select name="Role" id="Role" class="border border-gray-300 p-3 rounded-md w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                            <option value="Advisor">Danışman</option>
+                            <option value="Student">Öğrenci</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="Email" class="text-lg font-medium">E-posta</label>
+                        <input type="email" name="Email" id="Email" class="border border-gray-300 p-3 rounded-md w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="RelatedID" class="text-lg font-medium">İlgili ID (Opsiyonel)</label>
+                        <input type="number" name="RelatedID" id="RelatedID" class="border border-gray-300 p-3 rounded-md w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                </div>
+                <button type="submit" class="mt-6 bg-blue-600 text-white py-3 px-6 rounded-lg shadow-md hover:bg-blue-700 transition-transform transform hover:scale-105 duration-300 w-full">
+                    Kullanıcı Ekle
+                </button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
