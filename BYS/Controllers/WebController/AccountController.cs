@@ -64,7 +64,7 @@ namespace BYS.Controllers.WebController
                         // Kullanıcı giriş yaptıktan sonra
                         HttpContext.Session.SetString("StudentID", user.RelatedID.ToString());
 
-                        return RedirectToAction("Index", "Student", new { id = user.RelatedID });
+                        return RedirectToAction("Index", "Student",new { id = user.RelatedID });
                     }
                     else if (user.Role == "Advisor")
                     {
@@ -77,6 +77,14 @@ namespace BYS.Controllers.WebController
                 }
             }
             return View(model);
+        }
+        public IActionResult Logout()
+        {
+            // Oturumu kapat
+            HttpContext.Session.Clear();
+
+            // Kullanıcıyı giriş sayfasına yönlendir
+            return RedirectToAction("LoginUser", "Account");
         }
     }
 }

@@ -25,9 +25,21 @@ namespace BYS.Controllers.WebController
             _repositoryDbContext = repositoryDbContext;
         }
 
+
+       public async Task<IActionResult> Deneme()
+        {
+            var sId= HttpContext.Session.GetString("StudentID");
+
+            return RedirectToAction("Index", "Student", new { id = sId });
+
+
+        }
+
+
         // ID'ye göre öğrenci verilerini API'den alıyoruz
         public async Task<IActionResult> Index(int id)
         {
+
             // API endpoint URL'si
             var userId = HttpContext.Session.GetString("UserID");
 
@@ -292,7 +304,7 @@ namespace BYS.Controllers.WebController
             return View();
         }
 
-        
+
 
 
 
