@@ -1,0 +1,64 @@
+﻿@model BYS.Models.Advisors
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yetkili Paneli</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 min-h-screen flex justify-center items-center relative overflow-hidden">
+    <!-- Decorative Elements -->
+    <div class="absolute w-72 h-72 bg-white opacity-10 rounded-full -top-10 -left-10"></div>
+    <div class="absolute w-96 h-96 bg-white opacity-10 rounded-full bottom-0 -right-16"></div>
+
+    <!-- Main Container -->
+    <div class="backdrop-blur-lg bg-white/30 shadow-2xl rounded-3xl p-8 max-w-4xl w-full transform transition hover:scale-105 duration-300">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-indigo-700 to-indigo-500 text-white py-6 rounded-t-3xl shadow-lg text-center">
+            <h1 class="text-4xl font-extrabold tracking-widest uppercase drop-shadow-lg">Yetkili Paneli</h1>
+        </div>
+
+        <!-- Advisor Info -->
+        <div class="p-6 text-gray-900 text-center space-y-6">
+            <div class="p-4 rounded-xl bg-gray-100 shadow-md hover:shadow-lg transition">
+                <p class="text-lg font-medium tracking-wide">🎓 <span class="text-gray-500">Görev:</span> <strong>@Model.Title</strong></p>
+            </div>
+            <div class="p-4 rounded-xl bg-gray-100 shadow-md hover:shadow-lg transition">
+                <p class="text-2xl font-bold tracking-wide">👤 <span class="text-gray-500">Ad Soyad:</span> <strong>@Model.FullName</strong></p>
+            </div>
+            <div class="p-4 rounded-xl bg-gray-100 shadow-md hover:shadow-lg transition">
+                <p class="text-lg font-medium tracking-wide">🏢 <span class="text-gray-500">Bölüm:</span> <strong>@Model.Department</strong></p>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-6">
+            <a href="@Url.Action("AddUser", "Advisor")"
+               class="bg-indigo-600 text-white py-4 px-6 rounded-2xl shadow-lg hover:bg-indigo-500 transform hover:scale-105 transition-all duration-300 text-center font-semibold flex items-center justify-center space-x-2">
+                <span>➕</span>
+                <span>Kullanıcı Ekle</span>
+            </a>
+
+            <a href="@Url.Action("CoursesConfirm", "Advisor")"
+               class="bg-yellow-600 text-white py-4 px-6 rounded-2xl shadow-lg hover:bg-yellow-500 transform hover:scale-105 transition-all duration-300 text-center font-semibold flex items-center justify-center space-x-2">
+                <span>✔️</span>
+                <span>Ders Onayla</span>
+            </a>
+
+            <a href="@Url.Action("Logout", "Account")"
+               class="bg-red-600 text-white py-4 px-6 rounded-2xl shadow-lg hover:bg-red-500 transform hover:scale-105 transition-all duration-300 text-center font-semibold flex items-center justify-center space-x-2">
+                <span>🚪</span>
+                <span>Çıkış Yap</span>
+            </a>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center py-4 mt-6 text-gray-600 text-sm">
+            <p>&copy; 2024 Yetkili Yönetim Sistemi | Tüm Hakları Saklıdır</p>
+        </div>
+    </div>
+</body>
+</html>
